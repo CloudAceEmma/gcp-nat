@@ -14,7 +14,7 @@ resources:
         boot: true
         autoDelete: true
         initializeParams:
-          sourceImage: projects/debian-cloud/global/images/family/debian-11-bullseye-v20220621
+          sourceImage: projects/debian-cloud/global/images/debian-11-bullseye-v20220621
       networkInterfaces:
       - network: projects/{{ env["project"] }}/global/networks/default
         networkIP: {{ properties["internalIP"] }} 
