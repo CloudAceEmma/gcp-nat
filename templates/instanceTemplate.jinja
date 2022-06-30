@@ -1,0 +1,33 @@
+resources:
+- name: {{ env["name"] }}
+  type: compute.v1.instanceTemplate
+  properties:
+    properties:
+      project: {{ env["project"] }}
+      machineType: e2-small
+      canIpForward: true
+      properties:
+        zone: {{ properties["zone"] }}
+      disks:
+      - deviceName: boot
+        type: PERSISTENT
+        boot: true
+        autoDelete: true
+        initializeParams:
+          sourceImage: projects/debian-cloud/global/images/family/debian-11-bullseye-v20220621
+      networkInterfaces:
+      - network: projects/{{ env["project"] }}/global/networks/default
+        networkIP: {{ properties["internalIP"] }} 
+        # Access Config required to give the instance a public IP address
+        accessConfigs:
+        - natIP: {{ properties["ip"] }}
+          type: ONE_TO_ONE_NAT
+      tags:
+        items: ["natgw"]
+      metadata:
+        items:
+        {% for key, value in properties['metadata-from-file'].items() %}
+        - key: {{ key }}
+          value: |
+            {{ imports[value]|indent(12) }}
+      {% endfor %}
